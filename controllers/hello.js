@@ -1,6 +1,6 @@
 module.exports = function(app){
     var methodGETHello = '/hello';
-    app.get(methodGETHello, function(req, resp){
+    app.post(methodGETHello, function(req, resp){
         console.log('invoking ' + methodGETHello);
     
         resp.send({'return':'success'});
