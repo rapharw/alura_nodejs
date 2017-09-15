@@ -1,7 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 
 function testConnection(invoke){
-    var url = "mongodb://<dbuser>:<dbpass>@<dbhost>/<dbname>";
+    var url = process.env.OPENSHIFT_MONGODBURL || "mongodb://<dbuser>:<dbpass>@<dbhost>/<dbname>";
     MongoClient.connect(url, function(err, db) {
         if(!err){
             console.log("Connected correctly to server.");
