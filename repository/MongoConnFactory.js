@@ -7,7 +7,6 @@ MongoConnFactory.prototype.findAll = function(collection, callback){
     MongoClient.connect(url, function(err, db) {
         if(!err){
             var cursor = db.collection(collection).find().toArray(function(err, results) {
-                console.log(results);
                 callback(results);
             });
             db.close();
@@ -18,6 +17,22 @@ MongoConnFactory.prototype.findAll = function(collection, callback){
         }
     });
 }
+
+MongoConnFactory.prototype.find = function(collection, params, callback){
+    MongoClient.connect(url, function(err, db) {
+        if(!err){
+            var cursor = db.collection(collection).find(params).toArray(function(err, results) {
+                callback(results);
+            });
+            db.close();
+        }
+        else{
+            console.log(err);
+            callback(results);
+        }
+    });
+}
+
 
 module.exports = function(){
     return MongoConnFactory;

@@ -7,4 +7,14 @@ module.exports = function(app){
             res.send(results);
         });
     });
+
+    var methodMongodbconn2 = "/mongodbtestconn2/:status";
+    app.get(methodMongodbconn2, function(req, res){
+        var status = req.params.status;
+
+        var repository = new app.repository.MongoConnFactory();
+        repository.find('tarefas',{ 'status': status} , function (results){
+            res.send(results);
+        });
+    });
 }
