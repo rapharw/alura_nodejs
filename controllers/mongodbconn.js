@@ -1,9 +1,10 @@
 module.exports = function(app){
-
     
     var methodMongodbconn = "/mongodbtestconn";
     app.get(methodMongodbconn, function(req, res){
-        var conn = app.repository.MongoConnFactory();
-        res.send("SUCCESS");
+        var repository = new app.repository.MongoConnFactory();
+        repository.findAll('tarefas', function (results){
+            res.send(results);
+        });
     });
 }
