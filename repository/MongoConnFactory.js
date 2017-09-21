@@ -30,16 +30,16 @@ MongoConnFactory.prototype.findById = function(collection, id, callback){
     MongoClient.connect(url, function(err, db) {
         if(err)
             throw err;
-            db.collection(collection).find({_id: ObjectID(id)}).toArray(function(err, results) {
-            callback(results);
-        });
+            db.collection(collection).findOne({_id: ObjectID(id)}, function(err, results) {
+                callback(results);
+            });
     
         db.close();
     });
 }
 
 /**
- * Faz a busca pelos parametros passados
+ * Faz a busca pelos parametros passados, retornando um array
  */
 MongoConnFactory.prototype.find = function(collection, params, callback){
     MongoClient.connect(url, function(err, db) {
@@ -57,24 +57,31 @@ MongoConnFactory.prototype.find = function(collection, params, callback){
 /**
  * Insere um registro na collection
  */
-MongoConnFactory.prototype.insertOne = function(collection, params, callback){
-    params.idc_status = "ATIVO";
+MongoConnFactory.prototype.insertOne = function(collection, document, callback){
+    document.idc_status = "ATIVO";
     MongoClient.connect(url, function(err, db) {
-        db.collection(collection).insertOne(params, function(err, results) {
-            if (err) throw err;
+        db.collection(collection).insertOne(document, function(err, results) {
+            if (err) 
+                throw err;
+            console.log(results.insertedId);
             callback(results);
         });
         db.close();
     });
 }
 
+
 /**
- * Insere um registro na collection
+ * remove um registro na collection
  */
-MongoConnFactory.prototype.remove = function(collection, params, callback){
-    params.idc_status = "INATIVO";
+MongoConnFactory.prototype.remove = function(collection, document, callback){
+    document.idc_status = "INATIVO";
+    console.log("Preparando para atualizar: " + JSON.stringify(document));
     MongoClient.connect(url, function(err, db) {
-        db.collection(collection).findOneAndUpdate(params, function(err, results) {
+        db.collection(collection).updateOne(
+                                            {_id: ObjectID(document.id)}, 
+                                            {$set: document},
+                                            function(err, results) {
             if (err) throw err;
             callback(results);
         });

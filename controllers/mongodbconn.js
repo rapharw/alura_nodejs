@@ -32,15 +32,15 @@ module.exports = function(app){
         var tarefa = req.body;
         tarefa.data = new Date;
         
-        console.log(tarefa);
         var conn = getConnection(app);
         conn.insertOne('tarefas', tarefa , function (results){
             if(results){
-                console.log("CRIADO COM SUCESSO: " + tarefa + " | " + results)
-                res.redirect('/tarefa/' + results._id);	
+                //res.send({msg: "SUCCESS", id: results.insertedId});	
+                res.redirect("/tarefa/" + results.insertedId);
             }
-            else
-                res.send({"msg": "ERRO AO CRIAR"});
+            else{
+                res.send({msg: "ERRO", dsc: "Erro ao criar a tarefa"});
+            }
         });
         
     });
@@ -51,13 +51,20 @@ module.exports = function(app){
     app.delete("/tarefa/:id", function(req, res){
         var _id = req.params.id;
         var conn = getConnection(app);
-        conn.remove('tarefas', _id , function (results){
-            if(results){
-                console.log("INATIVADO COM SUCESSO: " + _id + " | " + results)
-                res.redirect('/tarefa');	
-            }
-            else
-                res.send({"msg": "ERRO AO INATIVAR"});
+
+        console.log("Inativando o recurso de ID: " + _id);
+
+        conn.findById('tarefas', _id , function (document){
+            
+            console.log("Retornou o documento: " + JSON.stringify(document));
+
+            conn.remove('tarefas', document , function (results){
+                if(results){
+                    res.send({msg: "SUCCESS"})
+                }
+                else
+                    res.send({msg: "ERRO", dsc: "Erro ao inativar a tarefa"});
+            });
         });
         
     });
