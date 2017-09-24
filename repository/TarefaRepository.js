@@ -3,12 +3,12 @@ var ObjectID = require('mongodb').ObjectID;
 
 var url = process.env.OPENSHIFT_MONGODBURL || "mongodb://<dbuser>:<dbpass>@<dbhost>/<dbname>";
 
-function MongoConnFactory(){}
+function TarefaRepository(){}
 
 /**
  * Busca todos os elementos da Collection
  */
-MongoConnFactory.prototype.findAll = function(collection, callback){
+TarefaRepository.prototype.findAll = function(collection, callback){
     MongoClient.connect(url, function(err, db) {
         if(!err){
             var cursor = db.collection(collection).find().toArray(function(err, results) {
@@ -26,7 +26,7 @@ MongoConnFactory.prototype.findAll = function(collection, callback){
 /**
  * Faz a busca pelo id
  */
-MongoConnFactory.prototype.findById = function(collection, id, callback){
+TarefaRepository.prototype.findById = function(collection, id, callback){
     MongoClient.connect(url, function(err, db) {
         if(err)
             throw err;
@@ -41,7 +41,7 @@ MongoConnFactory.prototype.findById = function(collection, id, callback){
 /**
  * Faz a busca pelos parametros passados, retornando um array
  */
-MongoConnFactory.prototype.find = function(collection, params, callback){
+TarefaRepository.prototype.find = function(collection, params, callback){
     MongoClient.connect(url, function(err, db) {
         if(err)
             throw err;
@@ -57,7 +57,7 @@ MongoConnFactory.prototype.find = function(collection, params, callback){
 /**
  * Insere um registro na collection
  */
-MongoConnFactory.prototype.insertOne = function(collection, document, callback){
+TarefaRepository.prototype.insertOne = function(collection, document, callback){
     document.idc_status = "ATIVO";
     MongoClient.connect(url, function(err, db) {
         db.collection(collection).insertOne(document, function(err, results) {
@@ -72,14 +72,13 @@ MongoConnFactory.prototype.insertOne = function(collection, document, callback){
 
 
 /**
- * remove um registro na collection
+ * inativa um documento na collection de acordo com um Document informado
  */
-MongoConnFactory.prototype.remove = function(collection, document, callback){
-    document.idc_status = "INATIVO";
-    console.log("Preparando para atualizar: " + JSON.stringify(document));
+TarefaRepository.prototype.updateOne = function(collection, document, status, callback){
+    document.idc_status = status;
     MongoClient.connect(url, function(err, db) {
-        db.collection(collection).updateOne(
-                                            {_id: ObjectID(document.id)}, 
+        db.collection(collection).findOneAndUpdate(
+                                            {_id: ObjectID(document._id)}, 
                                             {$set: document},
                                             function(err, results) {
             if (err) throw err;
@@ -90,6 +89,35 @@ MongoConnFactory.prototype.remove = function(collection, document, callback){
 }
 
 
+/**
+ * Remove um registro na collection
+ */
+TarefaRepository.prototype.removeByDocument = function(collection, document, callback){
+    MongoClient.connect(url, function(err, db) {
+        db.collection(collection).remove(document, function(err, results) {
+            if (err) 
+                throw err;
+            callback(results);
+        });
+        db.close();
+    });
+}
+
+
+/**
+ * Remove TODOS os registros na collection
+ */
+TarefaRepository.prototype.removeAll = function(collection, callback){
+    MongoClient.connect(url, function(err, db) {
+        db.collection(collection).remove({}, function(err, results) {
+            if (err) 
+                throw err;
+            callback(results);
+        });
+        db.close();
+    });
+}
+
 module.exports = function(){
-    return MongoConnFactory;
+    return TarefaRepository;
 }

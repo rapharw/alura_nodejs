@@ -1,7 +1,7 @@
 module.exports = function(app){
     
     function getConnection(app){
-        return new app.repository.MongoConnFactory();
+        return new app.repository.TarefaRepository();
     }
 
     /**
@@ -35,7 +35,6 @@ module.exports = function(app){
         var conn = getConnection(app);
         conn.insertOne('tarefas', tarefa , function (results){
             if(results){
-                //res.send({msg: "SUCCESS", id: results.insertedId});	
                 res.redirect("/tarefa/" + results.insertedId);
             }
             else{
@@ -51,14 +50,9 @@ module.exports = function(app){
     app.delete("/tarefa/:id", function(req, res){
         var _id = req.params.id;
         var conn = getConnection(app);
-
-        console.log("Inativando o recurso de ID: " + _id);
-
         conn.findById('tarefas', _id , function (document){
-            
-            console.log("Retornou o documento: " + JSON.stringify(document));
-
-            conn.remove('tarefas', document , function (results){
+            conn = getConnection(app);
+            conn.updateOne('tarefas', document , "INATIVO", function (results){
                 if(results){
                     res.send({msg: "SUCCESS"})
                 }
@@ -73,15 +67,53 @@ module.exports = function(app){
      * Reativa uma tarefa
      */
     app.put("/tarefa/:id", function(req, res){
-        var id = req.params.id;
+        var _id = req.params.id;
         var conn = getConnection(app);
-        conn.update('tarefas', id , function (results){
+        conn.findById('tarefas', _id , function (document){
+            conn = getConnection(app);
+            conn.updateOne('tarefas', document , "ATIVO", function (results){
+                if(results){
+                    res.send({msg: "SUCCESS"})
+                }
+                else
+                    res.send({msg: "ERRO", dsc: "Erro ao reativar a tarefa"});
+            });
+        });
+        
+    });
+
+
+
+    /**
+     * Remove todos os registros da collection
+     */
+    app.delete("/tarefa", function(req, res){
+        var conn = getConnection(app);
+        conn.removeAll('tarefas', function (results){
             if(results){
-                console.log("REATIVADO COM SUCESSO: " + id + " | " + results)
-                res.redirect('/tarefa');	
+                res.send({msg: "SUCCESS"})
             }
             else
-                res.send({"msg": "ERRO AO REATIVAR"});
+                res.send({msg: "ERRO", dsc: "Erro ao zerar collection"});
+        });
+    });
+
+
+    /**
+     * Remove uma tarefa
+     */
+    app.purge("/tarefa/:id", function(req, res){
+        var _id = req.params.id;
+        var conn = getConnection(app);
+        conn.findById('tarefas', _id , function (document){
+            conn = getConnection(app);
+            conn.removeByDocument('tarefas', document, function (results){
+                if(results){
+                    res.send({msg: "SUCCESS"})
+                }
+                else
+                    res.send({msg: "ERRO", dsc: "Erro ao inativar a tarefa"});
+            });
         });
         
     });
