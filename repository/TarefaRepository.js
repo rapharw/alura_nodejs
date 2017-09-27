@@ -5,6 +5,15 @@ var url = process.env.OPENSHIFT_MONGODBURL || "mongodb://<dbuser>:<dbpass>@<dbho
 
 function TarefaRepository(){}
 
+TarefaRepository.prototype.validaId = function(id, callback){
+    try{
+        ObjectID(id);
+        callback(true);
+    }catch(e){
+        callback(false);
+    }
+}
+
 /**
  * Busca todos os elementos da Collection
  */

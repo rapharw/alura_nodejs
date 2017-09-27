@@ -16,6 +16,8 @@ module.exports = function(){
 
     app.use(express.static('./public/'));
 
+    app.disable('x-powered-by');
+
     consign()
     .include('controllers')
     .then('repository')

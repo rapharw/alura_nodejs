@@ -20,8 +20,16 @@ module.exports = function(app){
     app.get("/tarefa/:id", function(req, res){
         var _id = req.params.id;
         var conn = getConnection(app);
-        conn.findById('tarefas', _id , function (results){
-            res.send(results);
+
+        conn.validaId(_id, function(idIsValid){
+            if(idIsValid == true){
+                conn.findById('tarefas', _id , function (results){
+                    res.send(results);
+                });
+            }
+            else{
+                res.send({msg: "ERRO", dsc: "ID Invalido"});
+            }
         });
     });
 
@@ -50,17 +58,25 @@ module.exports = function(app){
     app.delete("/tarefa/:id", function(req, res){
         var _id = req.params.id;
         var conn = getConnection(app);
-        conn.findById('tarefas', _id , function (document){
-            conn = getConnection(app);
-            conn.updateOne('tarefas', document , "INATIVO", function (results){
-                if(results){
-                    res.send({msg: "SUCCESS"})
-                }
-                else
-                    res.send({msg: "ERRO", dsc: "Erro ao inativar a tarefa"});
-            });
+
+        conn.validaId(_id, function(idIsValid){
+            if(idIsValid == true){
+
+                conn.findById('tarefas', _id , function (document){
+                    conn = getConnection(app);
+                    conn.updateOne('tarefas', document , "INATIVO", function (results){
+                        if(results){
+                            res.send({msg: "SUCCESS"})
+                        }
+                        else
+                            res.send({msg: "ERRO", dsc: "Erro ao inativar a tarefa"});
+                    });
+                });
+            }
+            else{
+                res.send({msg: "ERRO", dsc: "ID Invalido"});
+            }
         });
-        
     });
 
     /**
@@ -69,17 +85,25 @@ module.exports = function(app){
     app.put("/tarefa/:id", function(req, res){
         var _id = req.params.id;
         var conn = getConnection(app);
-        conn.findById('tarefas', _id , function (document){
-            conn = getConnection(app);
-            conn.updateOne('tarefas', document , "ATIVO", function (results){
-                if(results){
-                    res.send({msg: "SUCCESS"})
-                }
-                else
-                    res.send({msg: "ERRO", dsc: "Erro ao reativar a tarefa"});
-            });
+
+        conn.validaId(_id, function(idIsValid){
+            if(idIsValid == true){
+
+                conn.findById('tarefas', _id , function (document){
+                    conn = getConnection(app);
+                    conn.updateOne('tarefas', document , "ATIVO", function (results){
+                        if(results){
+                            res.send({msg: "SUCCESS"})
+                        }
+                        else
+                            res.send({msg: "ERRO", dsc: "Erro ao reativar a tarefa"});
+                    });
+                });
+            }
+            else{
+                res.send({msg: "ERRO", dsc: "ID Invalido"});
+            }
         });
-        
     });
 
 
@@ -105,16 +129,23 @@ module.exports = function(app){
     app.purge("/tarefa/:id", function(req, res){
         var _id = req.params.id;
         var conn = getConnection(app);
-        conn.findById('tarefas', _id , function (document){
-            conn = getConnection(app);
-            conn.removeByDocument('tarefas', document, function (results){
-                if(results){
-                    res.send({msg: "SUCCESS"})
-                }
-                else
-                    res.send({msg: "ERRO", dsc: "Erro ao inativar a tarefa"});
-            });
+        conn.validaId(_id, function(idIsValid){
+            if(idIsValid == true){
+
+                conn.findById('tarefas', _id , function (document){
+                    conn = getConnection(app);
+                    conn.removeByDocument('tarefas', document, function (results){
+                        if(results){
+                            res.send({msg: "SUCCESS"})
+                        }
+                        else
+                            res.send({msg: "ERRO", dsc: "Erro ao inativar a tarefa"});
+                    });
+                });
+            }
+            else{
+                res.send({msg: "ERRO", dsc: "ID Invalido"});
+            }
         });
-        
     });
 }
