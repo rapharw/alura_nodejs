@@ -55,97 +55,97 @@ module.exports = function(app){
     /**
      * Inativa uma tarefa
      */
-    // app.delete("/tarefa/:id", function(req, res){
-    //     var _id = req.params.id;
-    //     var conn = getConnection(app);
+    app.delete("/tarefa/:id", function(req, res){
+        var _id = req.params.id;
+        var conn = getConnection(app);
 
-    //     conn.validaId(_id, function(idIsValid){
-    //         if(idIsValid == true){
+        conn.validaId(_id, function(idIsValid){
+            if(idIsValid == true){
 
-    //             conn.findById('tarefas', _id , function (document){
-    //                 conn = getConnection(app);
-    //                 conn.updateOne('tarefas', document , "INATIVO", function (results){
-    //                     if(results){
-    //                         res.send({msg: "SUCCESS"})
-    //                     }
-    //                     else
-    //                         res.send({msg: "ERRO", dsc: "Erro ao inativar a tarefa"});
-    //                 });
-    //             });
-    //         }
-    //         else{
-    //             res.send({msg: "ERRO", dsc: "ID Invalido"});
-    //         }
-    //     });
-    // });
+                conn.findById('tarefas', _id , function (document){
+                    conn = getConnection(app);
+                    conn.updateOne('tarefas', document , "INATIVO", function (results){
+                        if(results){
+                            res.send({msg: "SUCCESS"})
+                        }
+                        else
+                            res.send({msg: "ERRO", dsc: "Erro ao inativar a tarefa"});
+                    });
+                });
+            }
+            else{
+                res.send({msg: "ERRO", dsc: "ID Invalido"});
+            }
+        });
+    });
 
     /**
      * Reativa uma tarefa
      */
-    // app.put("/tarefa/:id", function(req, res){
-    //     var _id = req.params.id;
-    //     var conn = getConnection(app);
+    app.put("/tarefa/:id", function(req, res){
+        var _id = req.params.id;
+        var conn = getConnection(app);
 
-    //     conn.validaId(_id, function(idIsValid){
-    //         if(idIsValid == true){
+        conn.validaId(_id, function(idIsValid){
+            if(idIsValid == true){
 
-    //             conn.findById('tarefas', _id , function (document){
-    //                 conn = getConnection(app);
-    //                 conn.updateOne('tarefas', document , "ATIVO", function (results){
-    //                     if(results){
-    //                         res.send({msg: "SUCCESS"})
-    //                     }
-    //                     else
-    //                         res.send({msg: "ERRO", dsc: "Erro ao reativar a tarefa"});
-    //                 });
-    //             });
-    //         }
-    //         else{
-    //             res.send({msg: "ERRO", dsc: "ID Invalido"});
-    //         }
-    //     });
-    // });
+                conn.findById('tarefas', _id , function (document){
+                    conn = getConnection(app);
+                    conn.updateOne('tarefas', document , "ATIVO", function (results){
+                        if(results){
+                            res.send({msg: "SUCCESS"})
+                        }
+                        else
+                            res.send({msg: "ERRO", dsc: "Erro ao reativar a tarefa"});
+                    });
+                });
+            }
+            else{
+                res.send({msg: "ERRO", dsc: "ID Invalido"});
+            }
+        });
+    });
 
 
 
     /**
      * Remove todos os registros da collection
      */
-    // app.delete("/tarefa", function(req, res){
-    //     var conn = getConnection(app);
-    //     conn.removeAll('tarefas', function (results){
-    //         if(results){
-    //             res.send({msg: "SUCCESS"})
-    //         }
-    //         else
-    //             res.send({msg: "ERRO", dsc: "Erro ao zerar collection"});
-    //     });
-    // });
+    app.delete("/tarefa", function(req, res){
+        var conn = getConnection(app);
+        conn.removeAll('tarefas', function (results){
+            if(results){
+                res.send({msg: "SUCCESS"})
+            }
+            else
+                res.send({msg: "ERRO", dsc: "Erro ao zerar collection"});
+        });
+    });
 
 
     /**
      * Remove uma tarefa
      */
-    // app.purge("/tarefa/:id", function(req, res){
-    //     var _id = req.params.id;
-    //     var conn = getConnection(app);
-    //     conn.validaId(_id, function(idIsValid){
-    //         if(idIsValid == true){
+    app.purge("/tarefa/:id", function(req, res){
+        var _id = req.params.id;
+        var conn = getConnection(app);
+        conn.validaId(_id, function(idIsValid){
+            if(idIsValid == true){
 
-    //             conn.findById('tarefas', _id , function (document){
-    //                 conn = getConnection(app);
-    //                 conn.removeByDocument('tarefas', document, function (results){
-    //                     if(results){
-    //                         res.send({msg: "SUCCESS"})
-    //                     }
-    //                     else
-    //                         res.send({msg: "ERRO", dsc: "Erro ao inativar a tarefa"});
-    //                 });
-    //             });
-    //         }
-    //         else{
-    //             res.send({msg: "ERRO", dsc: "ID Invalido"});
-    //         }
-    //     });
-    // });
+                conn.findById('tarefas', _id , function (document){
+                    conn = getConnection(app);
+                    conn.removeByDocument('tarefas', document, function (results){
+                        if(results){
+                            res.send({msg: "SUCCESS"})
+                        }
+                        else
+                            res.send({msg: "ERRO", dsc: "Erro ao remover a tarefa"});
+                    });
+                });
+            }
+            else{
+                res.send({msg: "ERRO", dsc: "ID Invalido"});
+            }
+        });
+    });
 }
