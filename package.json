@@ -12,7 +12,7 @@
     "body-parser": "^1.18.1",
     "consign": "^0.1.6",
     "express": "^4.15.4",
-    "mongodb": "^2.2.31",
+    "mongodb": "^3.6.1",
     "mongoose": "^4.11.11",
     "morgan": "^1.8.2",
     "properties-reader": "0.0.16"
